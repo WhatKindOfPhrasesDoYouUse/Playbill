@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <title>Редактирование мероприятия</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+    <h1>Редактирование мероприятия</h1>
+
+    <form th:action="@{/change}" method="post" th:object="${event}" id="eventForm">
+        <div class="form-group">
+            <label for="title">Заголовок:</label>
+            <input type="text" class="form-control" id="title" name="title" th:field="*{title}" required>
+        </div>
+        <div class="form-group">
+            <label for="date">Дата:</label>
+            <input type="date" class="form-control" id="date" name="date" th:field="*{date}"
+                   th:value="${#temporals.format(event.date, 'yyyy-MM-dd')}" required>
+        </div>
+        <div class="form-group">
+            <label for="time">Время:</label>
+            <input type="time" class="form-control" id="time" name="time" th:field="*{time}"
+                   th:value="${#temporals.format(event.time, 'HH:mm')}" required>
+        </div>
+        <div class="form-group">
+            <label for="duration">Продолжительность (в минутах):</label>
+            <input type="number" class="form-control" id="duration" name="duration" th:field="*{duration}" required>
+        </div>
+        <div class="form-group">
+            <label for="location">Место проведения:</label>
+            <input type="text" class="form-control" id="location" name="location" th:field="*{location}" required>
+        </div>
+        <div class="form-group">
+            <label for="price">Цена:</label>
+            <input type="number" class="form-control" id="price" name="price" th:field="*{price}" required>
+        </div>
+        <div class="form-group">
+            <label for="ageLimit">Возрастное ограничение:</label>
+            <input type="number" class="form-control" id="ageLimit" name="ageLimit" th:field="*{ageLimit}" required>
+        </div>
+        <div class="form-group">
+            <label for="quantity">Количество билетов:</label>
+            <input type="number" class="form-control" id="quantity" name="quantity" th:field="*{quantity}" required>
+        </div>
+
+        <button type="submit" class="btn btn-success">Сохранить мероприятие</button>
+    </form>
+</div>
+</body>
+</html>

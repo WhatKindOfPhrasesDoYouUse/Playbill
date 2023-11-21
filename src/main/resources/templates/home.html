@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="utf-8"/>
+    <title>Каталог мероприятий</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div class="fluid-container" th:fragment="navi(activeTab)">
+    <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-success">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto"> <!-- ml-auto для выравнивания вправо -->
+                <li sec:authorize="isAuthenticated()" class="nav-item" style="color: #dee2e6">
+                    <form th:action="@{/logout}" method="POST">
+                        <div class="input-group">
+                            <input type="submit" class="btn btn-danger" value="Выйти"/>
+                        </div>
+                    </form>
+                </li>
+                <li sec:authorize="isAuthenticated()" class="nav-item" style="color: #ffffff">
+                    <div class="navbar-text"
+                         style="position: absolute; top: 5px; left: 10px; width: auto; text-align: left;">
+                        Здравствуйте, <span th:if="${user_for_name != null}" th:text="${user_for_name.name}"></span>
+                    </div>
+                </li>
+                <li></li>
+            </ul>
+        </div>
+
+    </nav>
+    <div class="visible-md" style="height:80px;"></div>
+
+    <form method="get" th:action="@{/}" class="form-inline mx-auto">
+        <div class="form-group mx-sm-3 mb-2">
+            <input type="text" class="form-control" name="title" placeholder="Название события">
+        </div>
+        <div class="form-group mx-sm-3 mb-2">
+            <input type="number" class="form-control" name="minPrice" placeholder="Минимальная цена">
+        </div>
+        <div class="form-group mx-sm-3 mb-2">
+            <input type="number" class="form-control" name="maxPrice" placeholder="Максимальная цена">
+        </div>
+        <button type="submit" class="btn btn-success mb-2">Фильтровать</button>
+    </form>
+
+    <table class="table table-hover mx-auto">
+        <thead>
+        <tr>
+            <th sec:authorize="hasRole('ADMIN')">Id</th>
+            <th>Заголовок</th>
+            <th>Дата</th>
+            <th>Время</th>
+            <th>Продолжительность</th>
+            <th>Место проведения</th>
+            <th>Цена</th>
+            <th>Возрастное ограничение</th>
+            <th>Количество билетов</th>
+            <th sec:authorize="isAuthenticated()">Действия</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="event : ${events}">
+            <td sec:authorize="hasRole('ADMIN')" th:text="${event.id}"/>
+            <td th:text="${event.title}"/>
+            <td th:text="${event.date}"/>
+            <td th:text="${event.time}"/>
+            <td th:text="${event.duration}"/>
+            <td th:text="${event.location}"/>
+            <td th:text="${event.price}"/>
+            <td th:text="${event.ageLimit + '+'}"/>
+            <td th:text="${event.quantity }"/>
+            <td>
+                <a sec:authorize="hasRole('ADMIN') or hasRole('USER')" th:href="@{'/event-info/' + ${event.id}}"
+                   th:text="Просмотреть"/>
+                <a sec:authorize="hasRole('ADMIN')" th:href="@{'/edit-event/' + ${event.id}}" th:text="Редактировать"/>
+                <a sec:authorize="hasRole('ADMIN') or hasRole('USER')" th:href="@{'/add-cart/' + ${event.id}}">В корзину</a>
+                <a sec:authorize="hasRole('ADMIN')" th:href="@{'/remove-event/' + ${event.id}}" th:text="Удалить"/>
+                <div th:if="${event.quantity == 0}" class="no-tickets-message" style="color: red;">
+                    Билеты на это событие больше не доступны.
+                </div>
+                <div th:if="${event.ageLimit > user_for_name.age}" class="no-tickets-message" style="color: red;">
+                    Вам недостаточно лет для посещения данного мероприятия.
+                </div>
+
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <nav aria-label="Page navigation">
+        <ul class="pagination">
+            <li th:if="${events.hasPrevious()}" class="page-item" style="color: red;">
+                <a class="page-link" th:href="@{${pageUrl}(page=0)}">Первая</a>
+            </li>
+            <li th:if="${events.hasPrevious()}" class="page-item">
+                <a class="page-link" th:href="@{${pageUrl}(page=${events.getNumber() - 1})}">Предыдущая</a>
+            </li>
+            <li class="page-item disabled">
+                <span class="page-link">Страница [[${events.getNumber() + 1}]] из [[${events.getTotalPages()}]]</span>
+            </li>
+            <li th:if="${events.hasNext()}" class="page-item">
+                <a class="page-link" th:href="@{${pageUrl}(page=${events.getNumber() + 1})}">Следующая</a>
+            </li>
+            <li th:if="${events.hasNext()}" class="page-item">
+                <a class="page-link" th:href="@{${pageUrl}(page=${events.getTotalPages() - 1})}">Последняя</a>
+            </li>
+        </ul>
+    </nav>
+
+
+    <div style="text-align: center;">
+        <a sec:authorize="hasRole('ADMIN')" class="btn btn-success" th:href="@{/add-event}">Добавить мероприятие</a>
+        <a sec:authorize="hasRole('ADMIN') or hasRole('USER')" CLASS="btn btn-success" th:href="@{/cart}">Корзина
+            пользователя</a>
+        <a sec:authorize="hasRole('ADMIN') or hasRole('USER')" class="btn btn-success" th:href="@{/user-profile}">Личный
+            кабинет</a>
+    </div>
+</div>
+</body>
+</html>

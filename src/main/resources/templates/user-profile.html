@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8"/>
+    <title>Личный кабинет пользователя</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+    <style>
+
+        .container {
+            margin-top: 50px;
+        }
+
+        p {
+            margin-bottom: 10px;
+        }
+
+        form {
+            margin-top: 20px;
+        }
+
+        .btn-container {
+            margin-top: 20px;
+        }
+
+        .btn {
+            margin-right: 10px;
+        }
+
+        .user-info {
+            float: left;
+            width: 50%;
+        }
+
+        .btn-container {
+            clear: both;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Личный кабинет пользователя</h1>
+    <div class="user-info" th:object="${user}">
+        <p sec:authorize="hasRole('ADMIN')">
+            <strong>Id:</strong> <span th:text="${user.id}"></span>
+        </p>
+        <p><strong>Имя:</strong> <span th:text="${user.name}"></span></p>
+        <p><strong>Имя пользователя:</strong> <span th:text="${user.username}"></span></p>
+        <p><strong>Email:</strong> <span th:text="${user.email}"></span></p>
+        <p><strong>Баланс:</strong> <span th:text="${user.balance}"></span></p>
+        <p th:if="${user.age ge 14 and user.age le 22}">
+            <strong>Баланс пушкинской карты:</strong> <span th:text="${user.pushkinskayaBalance}"></span>
+        </p>
+        <p><strong>Возраст:</strong> <span th:text="${user.age}"></span></p>
+    </div>
+
+    <div class="btn-container">
+        <a class="btn btn-success" th:href="@{/cart}">Перейти в корзину</a>
+        <a href="/" class="btn btn-success">Домашняя страница</a>
+        <form th:action="@{/user-profile/up-balance}" method="post" class="form-inline">
+            <div class="form-group mx-sm-3 mb-2" style="margin-left: -5px;">
+                <label for="amount" class="sr-only">Сумма пополнения:</label>
+                <input type="number" id="amount" style="margin-left: -15px;" name="amount" class="form-control"
+                       required>
+            </div>
+            <button type="submit" class="btn btn-success">Пополнить баланс</button>
+        </form>
+    </div>
+
+</div>
+</body>
+</html>
