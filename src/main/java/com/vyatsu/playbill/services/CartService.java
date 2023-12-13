@@ -16,10 +16,18 @@ import java.util.List;
 
 @Service
 public class CartService {
+    public final CartRepository cartRepository;
+
     @Autowired
-    public CartRepository cartRepository;
+    public CartService(CartRepository cartRepository) {
+        this.cartRepository = cartRepository;
+    }
+
     public Page<Cart> getCartItemsForUser(User user, Pageable pageable) {
         return cartRepository.findByUser(user, pageable);
+    }
+    public Cart getCartByUser(User user) {
+        return cartRepository.findCartByUser(user);
     }
     public void addToCart(User user, Event event, String paymentType) {
         Cart cart = new Cart();
@@ -28,19 +36,22 @@ public class CartService {
         cart.setPaymentType(paymentType);
         cartRepository.save(cart);
     }
+
     public void removeFromCart(Long eventId, Long userId) {
         cartRepository.deleteByUserIdAndEventId(userId, eventId);
     }
+
     public Cart getCartItemById(Long id) {
         return cartRepository.findById(id).orElse(null);
     }
+
     @Transactional
     public void save(Cart cart) {
         cartRepository.save(cart);
     }
 
     @Transactional
-    public void clearCart(User user, List<Cart> itemsToRemove) {
+    public void removeAllCart(User user, List<Cart> itemsToRemove) {
         for (Cart cartItem : itemsToRemove) {
             cartRepository.delete(cartItem);
         }

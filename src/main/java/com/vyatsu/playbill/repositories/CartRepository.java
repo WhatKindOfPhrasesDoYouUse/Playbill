@@ -10,19 +10,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 
 @Repository
 public interface CartRepository extends JpaRepository<Cart, Long> {
-    Page<Cart> deleteByEventId(Long id, Pageable pageable);
-
     Page<Cart> findByUser(User user, Pageable pageable);
-
-    Page<Cart> findByEvent(Event event, Pageable pageable);
-
-    Page<Cart> deleteByEvent(Event event, Pageable pageable);
-
     void deleteByUserIdAndEventId(Long userId, Long eventId);
-
-    void deleteByUser(User user);
+    Cart findCartByUser(User user);
 
 }

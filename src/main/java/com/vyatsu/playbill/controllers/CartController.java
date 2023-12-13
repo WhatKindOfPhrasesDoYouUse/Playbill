@@ -27,12 +27,17 @@ import java.util.stream.Collectors;
 
 @Controller
 public class CartController {
+    private final CartService cartService;
+    public final UserRepository userRepository;
+
+    private final EventService eventService;
+
     @Autowired
-    private CartService cartService;
-    @Autowired
-    public UserRepository userRepository;
-    @Autowired
-    private EventService eventService;
+    public CartController(CartService cartService, UserRepository userRepository, EventService eventService) {
+        this.cartService = cartService;
+        this.userRepository = userRepository;
+        this.eventService = eventService;
+    }
 
     @GetMapping("/cart")
     public String showCart(Model model, Principal principal,
@@ -80,14 +85,14 @@ public class CartController {
     }
 
     @Transactional
-    @GetMapping("/cart/clear-all-cart")
+    @GetMapping("/cart/remove-all-cart")
     public String clearAllCart(Principal principal, Pageable pageable) {
         User user = userRepository.findByUsername(principal.getName());
         Page<Cart> cartItems = cartService.getCartItemsForUser(user, pageable);
         List<Cart> nonPurchasedItems = cartItems.stream().
                 filter(cartItem -> !cartItem.isPurchased())
                 .collect(Collectors.toList());
-        cartService.clearCart(user, nonPurchasedItems);
+        cartService.removeAllCart(user, nonPurchasedItems);
         return "redirect:/cart";
     }
 

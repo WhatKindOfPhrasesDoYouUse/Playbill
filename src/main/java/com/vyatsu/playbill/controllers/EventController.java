@@ -29,14 +29,17 @@ import java.util.stream.IntStream;
 
 @Controller
 public class EventController {
+    private final UserRepository userRepository;
+    private final EventRepository eventRepository;
+    private final EventService eventService;
     @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private EventRepository eventRepository;
-    @Autowired
-    private EventService eventService;
+    public EventController(UserRepository userRepository, EventRepository eventRepository, EventService eventService) {
+        this.userRepository = userRepository;
+        this.eventRepository = eventRepository;
+        this.eventService = eventService;
+    }
 
-    @GetMapping
+    @GetMapping()
     public String home(Model model,
                        Principal principal,
                        @PageableDefault(sort = {"id"}, direction = Sort.Direction.ASC, size = 5) Pageable pageable,

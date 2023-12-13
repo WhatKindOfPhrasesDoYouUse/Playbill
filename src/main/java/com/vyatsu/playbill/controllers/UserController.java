@@ -16,12 +16,17 @@ import java.util.List;
 
 @Controller
 public class UserController {
+
+    private final UserRepository userRepository;
+    private final UserService userService;
+    private final EventService eventService;
+
     @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private EventService eventService;
+    public UserController(UserRepository userRepository, UserService userService, EventService eventService) {
+        this.userRepository = userRepository;
+        this.userService = userService;
+        this.eventService = eventService;
+    }
 
     @GetMapping("/user-profile")
     public String userProfile(Model model, Principal principal) {

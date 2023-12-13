@@ -17,6 +17,24 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto"> <!-- ml-auto для выравнивания вправо -->
+                <li sec:authorize="isAuthenticated()" class="nav-item" style="color: #ffffff">
+                    <div class="navbar-text"
+                         style="position: absolute; top: 5px; left: 10px; width: auto; text-align: left;">
+                        Здравствуйте, <span th:if="${user_for_name != null}" th:text="${user_for_name.name}"></span>
+                    </div>
+                </li>
+
+                <!-- Остальные элементы вашего меню -->
+                <li sec:authorize="hasRole('ADMIN')" class="nav-item">
+                    <a class="btn btn-success" th:href="@{/add-event}">Добавить мероприятие</a>
+                </li>
+                <li sec:authorize="hasRole('ADMIN') or hasRole('USER')" class="nav-item">
+                    <a class="btn btn-success" th:href="@{/cart}">Корзина пользователя</a>
+                </li>
+                <li sec:authorize="hasRole('ADMIN') or hasRole('USER')" class="nav-item">
+                    <a class="btn btn-success" th:href="@{/user-profile}">Личный кабинет</a>
+                </li>
+
                 <li sec:authorize="isAuthenticated()" class="nav-item" style="color: #dee2e6">
                     <form th:action="@{/logout}" method="POST">
                         <div class="input-group">
@@ -24,19 +42,16 @@
                         </div>
                     </form>
                 </li>
-                <li sec:authorize="isAuthenticated()" class="nav-item" style="color: #ffffff">
-                    <div class="navbar-text"
-                         style="position: absolute; top: 5px; left: 10px; width: auto; text-align: left;">
-                        Здравствуйте, <span th:if="${user_for_name != null}" th:text="${user_for_name.name}"></span>
-                    </div>
-                </li>
-                <li></li>
             </ul>
         </div>
+    </nav>
+</div>
+
 
     </nav>
     <div class="visible-md" style="height:80px;"></div>
 
+    <div class="container">
     <form method="get" th:action="@{/}" class="form-inline mx-auto">
         <div class="form-group mx-sm-3 mb-2">
             <input type="text" class="form-control" name="title" placeholder="Название события">
@@ -50,6 +65,7 @@
         <button type="submit" class="btn btn-success mb-2">Фильтровать</button>
     </form>
 
+    <div class="container">
     <table class="table table-hover mx-auto">
         <thead>
         <tr>
@@ -113,15 +129,6 @@
             </li>
         </ul>
     </nav>
-
-
-    <div style="text-align: center;">
-        <a sec:authorize="hasRole('ADMIN')" class="btn btn-success" th:href="@{/add-event}">Добавить мероприятие</a>
-        <a sec:authorize="hasRole('ADMIN') or hasRole('USER')" CLASS="btn btn-success" th:href="@{/cart}">Корзина
-            пользователя</a>
-        <a sec:authorize="hasRole('ADMIN') or hasRole('USER')" class="btn btn-success" th:href="@{/user-profile}">Личный
-            кабинет</a>
-    </div>
 </div>
 </body>
 </html>

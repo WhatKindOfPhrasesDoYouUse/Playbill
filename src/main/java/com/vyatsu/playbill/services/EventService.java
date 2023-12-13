@@ -1,5 +1,6 @@
 package com.vyatsu.playbill.services;
 
+import com.vyatsu.playbill.models.Cart;
 import com.vyatsu.playbill.models.Event;
 import com.vyatsu.playbill.repositories.EventRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static antlr.build.ANTLR.root;
 
@@ -44,6 +46,7 @@ public class EventService {
     public Event getEventById(Long id) {
         return eventRepository.findById(id).orElse(null);
     }
+
     public Page<Event> filterEvents(String title, Integer minPrice, Integer maxPrice, Pageable pageable) {
         Specification<Event> specification = Specification.where(null);
         if (title != null && !title.isEmpty()) {
