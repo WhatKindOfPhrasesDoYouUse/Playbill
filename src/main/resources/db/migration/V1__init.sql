@@ -70,11 +70,3 @@ VALUES ((SELECT id FROM users WHERE username = 'dima'), (SELECT id FROM roles WH
        ((SELECT id FROM users WHERE username = 'egor'), (SELECT id FROM roles WHERE name = 'ROLE_USER')),
        ((SELECT id FROM users WHERE username = 'sashka'), (SELECT id FROM roles WHERE name = 'ROLE_USER')),
        ((SELECT id FROM users WHERE username = 'vadik228'), (SELECT id FROM roles WHERE name = 'ROLE_USER'));
-
-create table coffe (
-    id serial primary key,
-    name varchar(255) not null,
-    price int not null,
-    type int not null,
-    cooking_time int not null
-);
